@@ -1,6 +1,8 @@
 const express = require('express');
 const catchAsync = require('../utilities/catchAsync');
 
+const { createUser } = require('./../controllers/user-controller');
+
 const userRouter = express.Router();
 
 userRouter.get(
@@ -9,5 +11,7 @@ userRouter.get(
     res.status(201).send('hello');
   })
 );
+
+userRouter.post('/', createUser);
 
 module.exports = userRouter;
