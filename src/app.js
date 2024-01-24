@@ -1,9 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 
-// const dbConn = require('./src/bin/config').dbConn;
-
 const routes = require('./routes');
+const errorController = require('./controllers/error');
+const AppError = require('./utilities/AppError');
 
 var app = express();
 app.use(express.json());
@@ -17,4 +17,9 @@ app.use(
 
 app.use('/api/v1', routes);
 
-module.exports = app;
+app.use(errorController);
+app.all('*', (req, res, next) => {
+  return next(new AppError('Page not found', 404));
+});
+
+module.exports = { app };

@@ -1,24 +1,40 @@
 const mongoose = require('mongoose');
-const app = require('../index');
-const http = require('http');
+const colors = require('colors');
 
-require('dotenv').config();
+let databaseConnectionURL = `${process.env.DATABASE_CLOUD}`.replace(
+  '<password>',
+  process.env.DATABASE_PASSWORD
+);
 
-let mongo_url = process.env.MONGO_URL;
+// console.log('s3 bucket val', process.env.S3_BUCKET_ACTIVE);
+// if (process.env.S3_BUCKET_ACTIVE === "true") {
+//   databaseConnectionURL = `${process.env.DATABASE_CLOUD_NEW}`.replace(
+//     "<password>",
+//     process.env.DATABASE_PASSWORD_NEW
+//   );
+//   console.log("This is true".bgYellow.bold, process.env.S3_BUCKET_ACTIVE);
+// } else {
+//   databaseConnectionURL = `${process.env.DATABASE_CLOUD_NEW}`.replace(
+//     "<password>",
+//     process.env.DATABASE_PASSWORD_NEW
+//   );
+//   console.log("This is False".bgRed.bold, process.env.S3_BUCKET_ACTIVE);
+// }
+
 mongoose
-  .connect(mongo_url)
+  .connect(databaseConnectionURL)
   .then(() => {
-    console.log('Connected to Database...');
+    console.log(
+      'Connected to the database '.bgGreen.bold,
+      databaseConnectionURL.bgBlue.bold
+    );
   })
   .catch((err) => {
-    console.log('Error connecting to the Database', err);
+    console.log('Error connecting to database');
+    // console.log(err);
+    process.exit(1);
   });
 
-const port = process.env.PORT || 3000;
-const server = http.createServer(app);
-
-server.listen(port, () => {
-  console.log(`Connected to port ${port}`);
-});
-
-module.exports = { dbConn: mongoose.connection, server };
+module.exports = {
+  _db: mongoose.connection,
+};
