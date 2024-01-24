@@ -2,7 +2,7 @@ const express = require('express');
 
 const userRouter = express.Router();
 
-userRouter.post('/test', (req, res) => {
+userRouter.get('/test', (req, res) => {
   res.status(201).send('hello');
 });
 
