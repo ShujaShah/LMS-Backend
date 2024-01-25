@@ -4,8 +4,11 @@ const cors = require('cors');
 const routes = require('./routes');
 const errorController = require('./controllers/error');
 const AppError = require('./utilities/AppError');
+const cookieParser = require('cookie-parser');
 
 var app = express();
+
+app.use(cookieParser());
 app.use(express.json());
 
 app.use(

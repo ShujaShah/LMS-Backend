@@ -31,6 +31,21 @@ const createUser = catchAsync(async (req, res, next) => {
   const auth_token = user.generateAuthToken();
   const refresh_token = user.generateRefreshToken();
 
+  const auth_cookie_options = {
+    expires: new Date(Date.now() + 86400000),
+    httpOnly: true,
+    sameSite: 'None',
+  };
+
+  const refresh_cookie_options = {
+    expires: new Date(Date.now() + 365 * 86400000),
+    httpOnly: true,
+    sameSite: 'None',
+  };
+
+  res.cookie('auth_token', auth_token, auth_cookie_options);
+  res.cookie('refresh_token', refresh_token, refresh_cookie_options);
+
   user = await user.save();
   res.status(201).json({
     succesfull: 'true',
