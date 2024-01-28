@@ -35,6 +35,7 @@ const https_port = +(process.env.HTTPS_PORT || 3443);
 
 http_server.on('listening', () => {
   console.log(`HTTP server running on port ${http_port}`);
+  console.log(`HTTPS server running on port ${https_port}`);
 });
 
 http_server.on('error', (err) => {
