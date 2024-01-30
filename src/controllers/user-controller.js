@@ -84,7 +84,7 @@ const createUser = catchAsync(async (req, res, next) => {
 //Create 2FA and activation token
 const createActivationToken = (user) => {
   const activationCode = Math.floor(1000 + Math.random() * 9000).toString(); // Generate a random four-digit code
-  const expiresIn = 300; // 10 minutes in seconds
+  const expiresIn = 600; // 10 minutes in seconds
 
   // Calculate expiration timestamp
   const expirationTime = Math.floor(Date.now() / 1000) + expiresIn;
