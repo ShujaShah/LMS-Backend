@@ -54,13 +54,12 @@ const createUser = catchAsync(async (req, res, next) => {
   //user = await user.save();
   const { activationCode, token } = createActivationToken(user);
 
-  //send email
+  //Send Activation Email to the user
   const data = { user: { name: user.name }, activationCode };
   const html = ejs.renderFile(
     path.join(__dirname, '../mails/activation-email.ejs'),
     data
   );
-  console.log('here is the ejs');
   try {
     await sendMail({
       email: user.email,
