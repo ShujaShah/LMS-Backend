@@ -84,6 +84,10 @@ const createUser = catchAsync(async (req, res, next) => {
 //Create 2FA and activation token
 const createActivationToken = (user) => {
   const activationCode = Math.floor(1000 + Math.random() * 9000).toString(); // Generate a random four-digit code
+  const expiresIn = 300; // 10 minutes in seconds
+
+  // Calculate expiration timestamp
+  const expirationTime = Math.floor(Date.now() / 1000) + expiresIn;
 
   // Create a JSON Web Token, token contains the payload with two properties: user and 4 digit activation code
   const token = jwt.sign(
@@ -93,7 +97,7 @@ const createActivationToken = (user) => {
     },
     process.env.JWTPrivateKey,
     {
-      expiresIn: '10m',
+      expiresIn: expiresIn + 's',
     }
   );
   return { token, activationCode };
@@ -101,32 +105,48 @@ const createActivationToken = (user) => {
 
 //Function to Verify the users Two Factor Authentication
 //After successfully giving the code and token, user gets saved into the DataBase
+
 const VerifyTwoFa = catchAsync(async (req, res, next) => {
   const { activation_token, activation_code } = req.body;
 
-  const newUser = jwt.verify(activation_token, process.env.JWTPrivateKey);
+  try {
+    const decodedToken = jwt.verify(
+      activation_token,
+      process.env.JWTPrivateKey
+    );
 
-  if (newUser.activationCode !== activation_code) {
-    return next(res.status(400).send('Code is not valid...'));
+    // Check if activation code is valid
+    if (decodedToken.activationCode !== activation_code) {
+      return res.status(400).send('Code is not valid...');
+    }
+
+    // Check if the token has expired
+    const currentTime = Math.floor(Date.now() / 1000);
+    if (decodedToken.expirationTime < currentTime) {
+      return res.status(400).send('Activation token has expired');
+    }
+
+    const { email, name, password } = decodedToken.user;
+
+    // Check if the email already exists
+    let existing_user = await User.findOne({ email });
+    if (existing_user) {
+      return res.status(500).send('User with that email already exists');
+    }
+
+    let new_user = await User.create({
+      email,
+      name,
+      password,
+    });
+
+    res.status(201).json({
+      success: true,
+      data: new_user,
+    });
+  } catch (error) {
+    return res.status(400).send('Invalid activation token');
   }
-
-  const { email, name, password } = newUser.user;
-
-  //check if the email already exists
-  let existing_user = await User.findOne({ email });
-  if (existing_user)
-    return res.status(500).send('User with that email already exists');
-
-  let new_user = await User.create({
-    email,
-    name,
-    password,
-  });
-
-  res.status(201).json({
-    success: true,
-    data: new_user,
-  });
 });
 
 module.exports = { createUser, VerifyTwoFa };

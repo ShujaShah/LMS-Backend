@@ -1,25 +1,12 @@
 const mongoose = require('mongoose');
 const colors = require('colors');
 
-let databaseConnectionURL = `${process.env.DATABASE_CLOUD}`.replace(
-  '<password>',
-  process.env.DATABASE_PASSWORD
-);
+// let databaseConnectionURL = `${process.env.DATABASE_CLOUD}`.replace(
+//   '<password>',
+//   process.env.DATABASE_PASSWORD
+// );
 
-// console.log('s3 bucket val', process.env.S3_BUCKET_ACTIVE);
-// if (process.env.S3_BUCKET_ACTIVE === "true") {
-//   databaseConnectionURL = `${process.env.DATABASE_CLOUD_NEW}`.replace(
-//     "<password>",
-//     process.env.DATABASE_PASSWORD_NEW
-//   );
-//   console.log("This is true".bgYellow.bold, process.env.S3_BUCKET_ACTIVE);
-// } else {
-//   databaseConnectionURL = `${process.env.DATABASE_CLOUD_NEW}`.replace(
-//     "<password>",
-//     process.env.DATABASE_PASSWORD_NEW
-//   );
-//   console.log("This is False".bgRed.bold, process.env.S3_BUCKET_ACTIVE);
-// }
+let databaseConnectionURL = 'mongodb://localhost:27017/LMSBE';
 
 mongoose
   .connect(databaseConnectionURL)
