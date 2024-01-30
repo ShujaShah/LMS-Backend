@@ -102,11 +102,12 @@ const createActivationToken = (user) => {
 //Function to Verify the users Two Factor Authentication
 //After successfully giving the code and token, user gets saved into the DataBase
 const VerifyTwoFa = catchAsync(async (req, res, next) => {
-  const { activation_token, activationCode } = req.body;
+  const { activation_token, activation_code } = req.body;
+
   const newUser = jwt.verify(activation_token, process.env.JWTPrivateKey);
 
-  if (newUser.activationCode !== activationCode) {
-    return res.status(400).send('Invalid code');
+  if (newUser.activationCode !== activation_code) {
+    return next(res.status(400).send('Invalid Code or expired'));
   }
 
   const { email, name, password } = newUser.user;
