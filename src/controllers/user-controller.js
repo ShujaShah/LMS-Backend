@@ -1,9 +1,15 @@
-const { User, validateUser } = require('../models/entities/user-entity');
+const ejs = require('ejs');
+const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const AppError = require('../utilities/AppError');
-const catchAsync = require('../utilities/catchAsync');
 
+const { User, validateUser } = require('../models/entities/user-entity');
+const AppError = require('../utils/AppError');
+const catchAsync = require('../utils/catchAsync');
+const sendMail = require('../utils/send-mail');
+
+// Function to create a user
+//(This function is responsible for sending email to user for the activation of account )
 const createUser = catchAsync(async (req, res, next) => {
   const { error } = validateUser(req.body);
   if (error) {
@@ -47,11 +53,33 @@ const createUser = catchAsync(async (req, res, next) => {
 
   //user = await user.save();
   const { activationCode, token } = createActivationToken(user);
-  res.status(201).json({
-    user: user,
-    code: activationCode,
-    token: token,
-  });
+
+  //send email
+  const data = { user: { name: user.name }, activationCode };
+  const html = ejs.renderFile(
+    path.join(__dirname, '../mails/activation-email.ejs'),
+    data
+  );
+  console.log('here is the ejs');
+  try {
+    await sendMail({
+      email: user.email,
+      subject: 'Activate your account',
+      template: 'activation-email.ejs',
+      data,
+    });
+    res.status(201).json({
+      success: true,
+      activationCode: activationCode,
+      token: token,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to send activation email',
+    });
+  }
 });
 
 //Create 2FA and activation token
@@ -72,8 +100,8 @@ const createActivationToken = (user) => {
   return { token, activationCode };
 };
 
-//Verify 2FA
-
+//Function to Verify the users Two Factor Authentication
+//After successfully giving the code and token, user gets saved into the DataBase
 const VerifyTwoFa = catchAsync(async (req, res, next) => {
   const { activation_token, activationCode } = req.body;
   const newUser = jwt.verify(activation_token, process.env.JWTPrivateKey);

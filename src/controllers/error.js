@@ -1,4 +1,4 @@
-const AppError = require('../utilities/AppError');
+const AppError = require('../utils/AppError');
 require('colors');
 
 const handleCastErrorDB = (err) => {

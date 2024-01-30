@@ -1,5 +1,5 @@
 const express = require('express');
-const catchAsync = require('../utilities/catchAsync');
+const catchAsync = require('../utils/catchAsync');
 
 const { createUser, VerifyTwoFa } = require('./../controllers/user-controller');
 

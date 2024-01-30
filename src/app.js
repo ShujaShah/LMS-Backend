@@ -3,7 +3,7 @@ const cors = require('cors');
 
 const routes = require('./routes');
 const errorController = require('./controllers/error');
-const AppError = require('./utilities/AppError');
+const AppError = require('./utils/AppError');
 const cookieParser = require('cookie-parser');
 
 var app = express();
