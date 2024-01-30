@@ -72,4 +72,33 @@ const createActivationToken = (user) => {
   return { token, activationCode };
 };
 
-module.exports = { createUser };
+//Verify 2FA
+
+const VerifyTwoFa = catchAsync(async (req, res, next) => {
+  const { activation_token, activationCode } = req.body;
+  const newUser = jwt.verify(activation_token, process.env.JWTPrivateKey);
+
+  if (newUser.activationCode !== activationCode) {
+    return res.status(400).send('Invalid code');
+  }
+
+  const { email, name, password } = newUser.user;
+
+  //check if the email already exists
+  let existing_user = await User.findOne({ email });
+  if (existing_user)
+    return res.status(500).send('User with that email already exists');
+
+  let new_user = await User.create({
+    email,
+    name,
+    password,
+  });
+
+  res.status(201).json({
+    success: true,
+    data: new_user,
+  });
+});
+
+module.exports = { createUser, VerifyTwoFa };
