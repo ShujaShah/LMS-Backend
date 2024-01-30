@@ -107,7 +107,7 @@ const VerifyTwoFa = catchAsync(async (req, res, next) => {
   const newUser = jwt.verify(activation_token, process.env.JWTPrivateKey);
 
   if (newUser.activationCode !== activation_code) {
-    return next(res.status(400).send('Invalid Code or expired'));
+    return next(res.status(400).send('Code is not valid...'));
   }
 
   const { email, name, password } = newUser.user;
