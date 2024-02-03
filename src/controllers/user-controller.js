@@ -34,6 +34,15 @@ const createUser = catchAsync(async (req, res, next) => {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
 
+  createTokens(user, res);
+
+  const { activationCode, token } = createActivationToken(user);
+
+  sendActivationEmail(user, activationCode, token, req, res, next);
+});
+// ==============================================END OF CREATE REGISTER USR FUNCTION===================================================
+
+async function createTokens(user, res) {
   const auth_token = user.generateAuthToken();
   const refresh_token = user.generateRefreshToken();
 
@@ -51,14 +60,7 @@ const createUser = catchAsync(async (req, res, next) => {
 
   res.cookie('auth_token', auth_token, auth_cookie_options);
   res.cookie('refresh_token', refresh_token, refresh_cookie_options);
-
-  //user = await user.save();
-  const { activationCode, token } = createActivationToken(user);
-
-  //Send Activation Email to the user
-  sendActivationEmail(user, activationCode, token, req, res, next);
-});
-// ==============================================END OF CREATE REGISTER USR FUNCTION===================================================
+}
 
 const sendActivationEmail = async (
   user,
@@ -162,6 +164,7 @@ const VerifyTwoFa = catchAsync(async (req, res, next) => {
   }
 });
 
+// ============================================FUNCTION TO LOGIN =============================================================
 const Login = catchAsync(async (req, res, next) => {
   try {
     const { error } = validateUserLogin(req.body);
@@ -178,6 +181,7 @@ const Login = catchAsync(async (req, res, next) => {
       return res.status(400).send('Email or Password Incorrect');
 
     const token = user.generateAuthToken();
+    createTokens(user, res);
     user = await user.populate();
     res.status(201).json({
       success: 'true',
