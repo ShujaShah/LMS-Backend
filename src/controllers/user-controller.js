@@ -7,6 +7,8 @@ const { User, validateUser } = require('../models/entities/user-entity');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 const sendMail = require('../utils/send-mail');
+const { invalid } = require('joi');
+const Joi = require('joi');
 
 // Function to create a user
 //(This function is responsible for sending email to user for the activation of account )
@@ -161,4 +163,38 @@ const VerifyTwoFa = catchAsync(async (req, res, next) => {
   }
 });
 
-module.exports = { createUser, VerifyTwoFa };
+const Login = catchAsync(async (req, res, next) => {
+  try {
+    const { error } = validateUserLogin(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+    let user = await User.findOne({ email: req.body.email });
+    if (!user) return res.status(400).send('Invalid Email or Password');
+
+    //Compare the Passwords
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    if (!validPassword)
+      return res.status(400).send('Email or Password Incorrect');
+
+    const token = user.generateAuthToken();
+    res.status(201).json({
+      success: 'true',
+      token: token,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//Validation for the login
+const validateUserLogin = (user) => {
+  const schema = Joi.object({
+    email: Joi.string().email({}).required(),
+    password: Joi.string().required(),
+  });
+  return schema.validate(user);
+};
+
+module.exports = { createUser, VerifyTwoFa, Login };
