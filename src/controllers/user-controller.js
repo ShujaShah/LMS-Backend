@@ -7,7 +7,6 @@ const { User, validateUser } = require('../models/entities/user-entity');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 const sendMail = require('../utils/send-mail');
-const { invalid } = require('joi');
 const Joi = require('joi');
 
 // Function to create a user
@@ -179,8 +178,10 @@ const Login = catchAsync(async (req, res, next) => {
       return res.status(400).send('Email or Password Incorrect');
 
     const token = user.generateAuthToken();
+    user = await user.populate();
     res.status(201).json({
       success: 'true',
+      data: user,
       token: token,
     });
   } catch (error) {
