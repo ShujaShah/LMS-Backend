@@ -55,6 +55,18 @@ const createUser = catchAsync(async (req, res, next) => {
   const { activationCode, token } = createActivationToken(user);
 
   //Send Activation Email to the user
+  sendActivationEmail(user, activationCode, token, req, res, next);
+});
+// ==============================================END OF CREATE REGISTER USR FUNCTION===================================================
+
+const sendActivationEmail = async (
+  user,
+  activationCode,
+  token,
+  req,
+  res,
+  next
+) => {
   const data = { user: { name: user.name }, activationCode };
   const html = ejs.renderFile(
     path.join(__dirname, '../mails/activation-email.ejs'),
@@ -79,7 +91,7 @@ const createUser = catchAsync(async (req, res, next) => {
       error: 'Failed to send activation email',
     });
   }
-});
+};
 
 //Create 2FA and activation token
 const createActivationToken = (user) => {
@@ -103,7 +115,7 @@ const createActivationToken = (user) => {
   return { token, activationCode };
 };
 
-//Function to Verify the users Two Factor Authentication
+//================================================FUNCTION TO VERIFY TWO FA OF USER ====================================================
 //After successfully giving the code and token, user gets saved into the DataBase
 
 const VerifyTwoFa = catchAsync(async (req, res, next) => {
