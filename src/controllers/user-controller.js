@@ -182,7 +182,7 @@ const Login = catchAsync(async (req, res, next) => {
 
     const token = user.generateAuthToken();
     createTokens(user, res);
-    user = await user.populate();
+    user = await user.populate('email');
     res.status(201).json({
       success: 'true',
       data: user,
@@ -202,4 +202,45 @@ const validateUserLogin = (user) => {
   return schema.validate(user);
 };
 
-module.exports = { createUser, VerifyTwoFa, Login };
+//=============================================FUNCTION TO GET THE CURRENT USER====================================
+const LoggedInUser = catchAsync(async (req, res, next) => {
+  try {
+    const loggedUser = req.user;
+    const user = await User.findById(loggedUser).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//=================================FUNCTION TO LOGOUT THE USER========================================
+const LogOut = catchAsync(async (req, res, next) => {
+  try {
+    res.clearCookie('auth_token');
+    res.clearCookie('refresh_token');
+
+    if (!req.cookies || Object.keys(req.cookies).length === 0) {
+      return res.status(401).send('You are not logged in');
+    }
+    res.status(201).json({
+      success: true,
+      message: 'logged out successfully',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+module.exports = { createUser, VerifyTwoFa, Login, LoggedInUser, LogOut };

@@ -5,7 +5,10 @@ const {
   createUser,
   VerifyTwoFa,
   Login,
+  LoggedInUser,
+  LogOut,
 } = require('./../controllers/user-controller');
+const isAuthenticated = require('../middlewares/auth');
 
 const userRouter = express.Router();
 
@@ -21,5 +24,9 @@ userRouter.post('/', createUser);
 userRouter.post('/verify-code', VerifyTwoFa);
 
 userRouter.post('/login', Login);
+
+userRouter.get('/me', isAuthenticated, LoggedInUser);
+
+userRouter.post('/logout', isAuthenticated, LogOut);
 
 module.exports = userRouter;
