@@ -279,6 +279,30 @@ const DeleteUser = catchAsync(async (req, res, next) => {
     console.log(error);
   }
 });
+const GetAllUsers = catchAsync(async (req, res, next) => {
+  try {
+    const users = await User.find();
+    console.log(users);
+    if (!users) res.status(400).send('user collection is empty');
+    let usersCount = await User.countDocuments();
+
+    res.status(201).json({
+      success: true,
+      count: usersCount,
+      data: users,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+const GetSingleUser = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) return res.status(400).send('user not found');
+  res.status(201).json({
+    success: true,
+    data: user,
+  });
+});
 module.exports = {
   createUser,
   VerifyTwoFa,
@@ -287,4 +311,6 @@ module.exports = {
   LogOut,
   UpdateUser,
   DeleteUser,
+  GetAllUsers,
+  GetSingleUser,
 };

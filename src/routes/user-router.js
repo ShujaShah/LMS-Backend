@@ -9,6 +9,8 @@ const {
   LogOut,
   UpdateUser,
   DeleteUser,
+  GetAllUsers,
+  GetSingleUser,
 } = require('./../controllers/user-controller');
 const isAuthenticated = require('../middlewares/auth');
 
@@ -34,5 +36,9 @@ userRouter.post('/logout', isAuthenticated, LogOut);
 userRouter.patch('/:id', isAuthenticated, UpdateUser);
 
 userRouter.delete('/:id', isAuthenticated, DeleteUser);
+
+userRouter.get('/all', isAuthenticated, GetAllUsers);
+
+userRouter.get('/:id', isAuthenticated, GetSingleUser);
 
 module.exports = userRouter;
