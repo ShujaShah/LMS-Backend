@@ -7,6 +7,8 @@ const {
   Login,
   LoggedInUser,
   LogOut,
+  UpdateUser,
+  DeleteUser,
 } = require('./../controllers/user-controller');
 const isAuthenticated = require('../middlewares/auth');
 
@@ -28,5 +30,9 @@ userRouter.post('/login', Login);
 userRouter.get('/me', isAuthenticated, LoggedInUser);
 
 userRouter.post('/logout', isAuthenticated, LogOut);
+
+userRouter.patch('/:id', isAuthenticated, UpdateUser);
+
+userRouter.delete('/:id', isAuthenticated, DeleteUser);
 
 module.exports = userRouter;

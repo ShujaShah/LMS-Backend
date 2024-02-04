@@ -244,5 +244,47 @@ const LogOut = catchAsync(async (req, res, next) => {
 });
 
 //=================================FUNCTION TO UPDATE THE USER==============================================
+const UpdateUser = catchAsync(async (req, res, next) => {
+  const { error } = validateUser(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
 
-module.exports = { createUser, VerifyTwoFa, Login, LoggedInUser, LogOut };
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+      avatar: req.body?.avatar,
+    },
+    {
+      new: true,
+    }
+  );
+  if (!user) return res.status(400).send('No user with the given id found');
+  res.status(201).json({
+    success: true,
+    user: user,
+  });
+});
+
+const DeleteUser = catchAsync(async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user)
+      return res.status(400).send('user with the given id does not exist');
+    res.status(201).json({
+      success: true,
+      message: 'user successfully deleted',
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+module.exports = {
+  createUser,
+  VerifyTwoFa,
+  Login,
+  LoggedInUser,
+  LogOut,
+  UpdateUser,
+  DeleteUser,
+};
