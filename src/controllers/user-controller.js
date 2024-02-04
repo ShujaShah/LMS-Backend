@@ -154,7 +154,7 @@ const VerifyTwoFa = catchAsync(async (req, res, next) => {
       name,
       password,
     });
-
+    createTokens(new_user, res);
     res.status(201).json({
       success: true,
       data: new_user,
@@ -242,5 +242,7 @@ const LogOut = catchAsync(async (req, res, next) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
+
+//=================================FUNCTION TO UPDATE THE USER==============================================
 
 module.exports = { createUser, VerifyTwoFa, Login, LoggedInUser, LogOut };
