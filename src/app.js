@@ -5,11 +5,14 @@ const routes = require('./routes');
 const errorController = require('./controllers/error');
 const AppError = require('./utils/AppError');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
 var app = express();
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
   cors({

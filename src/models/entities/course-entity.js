@@ -9,14 +9,12 @@ const reviewSchema = new mongoose.Schema({
   },
   comments: String,
 });
-const Review = mongoose.model('Review', reviewSchema);
 
 //======================================================Links Schema========================================================
 const linkSchema = new mongoose.Schema({
   title: String,
   url: String,
 });
-const Link = mongoose.model('Links', linkSchema);
 
 //======================================================Comments Schema========================================================
 const commentsSchema = new mongoose.Schema({
@@ -24,34 +22,30 @@ const commentsSchema = new mongoose.Schema({
   comment: String,
   commentReplies: [Object],
 });
-const Comment = mongoose.model('Comment', commentsSchema);
 
 //======================================================Course Data Schema========================================================
-const courseData = new mongoose.schema({
+const courseDataSchema = new mongoose.Schema({
   videoUrl: String,
-  videoThumbnail: Object,
   title: String,
   videoSection: String,
   description: String,
-  links: [Link],
-  questions: [Comment],
+  links: [linkSchema],
+  questions: [commentsSchema],
 });
 
-const CourseData = mongoose.model('CourseData', courseData);
-
 //======================================================Course Schema========================================================
-const courseSchema = new mongoose.schema({
+const courseSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
+    //required: true,
   },
   description: {
     type: String,
-    required: true,
+    //required: true,
   },
   price: {
     type: Number,
-    required: true,
+    //required: true,
   },
   discountedPrice: {
     type: Number,
@@ -59,23 +53,23 @@ const courseSchema = new mongoose.schema({
   thumbnail: {
     public_id: {
       type: String,
-      required: true,
+      //required: true,
     },
     url: {
       type: String,
-      required: true,
+      //required: true,
     },
   },
   tags: {
     type: String,
-    required: true,
+    //required: true,
   },
   demoUrl: {
     type: String,
-    required: true,
+    //required: true,
   },
-  reviews: [Review],
-  courseData: [CourseData],
+  reviews: [reviewSchema],
+  courseData: [courseDataSchema],
   ratings: {
     type: Number,
     defatult: 0,
@@ -84,6 +78,16 @@ const courseSchema = new mongoose.schema({
     type: Number,
     default: 0,
   },
+  courseDetails: [
+    {
+      title: String,
+    },
+  ],
+  preRequisits: [
+    {
+      title: String,
+    },
+  ],
 });
 
 const Course = mongoose.model('Course', courseSchema);
