@@ -1,4 +1,4 @@
-const Course = require('../models/entities/course-entity');
+const Course = require('../entities/course-entity');
 
 //Create Course
 const createCourse = async (data, res) => {

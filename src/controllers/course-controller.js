@@ -1,6 +1,5 @@
 const cloudinary = require('cloudinary');
-const createCourse = require('../services/course-service');
-require('dotenv').config();
+const createCourse = require('../models/use-cases/course-uc');
 
 //Create Course
 const uploadCourse = async (req, res, next) => {
@@ -16,7 +15,12 @@ const uploadCourse = async (req, res, next) => {
         url: myCloud.secure_url,
       };
     }
-    createCourse(data, res, next);
+    await createCourse(data, res, next);
+    // const course = await Course.create(data);
+    // res.status(201).json({
+    //   success: true,
+    //   course,
+    // });
   } catch (error) {
     console.log(error);
   }

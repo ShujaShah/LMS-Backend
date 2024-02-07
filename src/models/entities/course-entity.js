@@ -37,15 +37,15 @@ const courseDataSchema = new mongoose.Schema({
 const courseSchema = new mongoose.Schema({
   title: {
     type: String,
-    //required: true,
+    required: true,
   },
   description: {
     type: String,
-    //required: true,
+    required: true,
   },
   price: {
     type: Number,
-    //required: true,
+    required: true,
   },
   discountedPrice: {
     type: Number,
@@ -62,11 +62,11 @@ const courseSchema = new mongoose.Schema({
   },
   tags: {
     type: String,
-    //required: true,
+    required: true,
   },
   demoUrl: {
     type: String,
-    //required: true,
+    required: true,
   },
   reviews: [reviewSchema],
   courseData: [courseDataSchema],
