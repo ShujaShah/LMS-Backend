@@ -25,7 +25,6 @@ const updateCourse = async (courseId, data, res) => {
 //Get All Courses
 const getCourses = async (res) => {
   const courses = await Course.find();
-  console.log(courses);
   if (!courses) return res.status(400).send('no courses in DB');
   res.status(201).json({
     success: true,
@@ -33,4 +32,31 @@ const getCourses = async (res) => {
   });
 };
 
-module.exports = { createCourse, updateCourse, getCourses };
+//Get Single Course
+const getOneCourse = async (courseId, res) => {
+  const course = await Course.findById(courseId);
+  if (!course)
+    return res.status(400).send('course with this id does not exist');
+  res.status(201).json({
+    success: true,
+    data: course,
+  });
+};
+
+const removeCourse = async (courseId, res) => {
+  const course = await Course.findByIdAndDelete(courseId);
+  if (!course)
+    return res.status(400).send('course with the given id not found');
+  res.status(201).json({
+    success: true,
+    message: 'Successfully deleted',
+  });
+};
+
+module.exports = {
+  createCourse,
+  updateCourse,
+  getCourses,
+  getOneCourse,
+  removeCourse,
+};
