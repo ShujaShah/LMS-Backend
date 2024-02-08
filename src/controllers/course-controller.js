@@ -24,13 +24,8 @@ const uploadCourse = async (req, res, next) => {
       };
     }
     await createCourse(data, res, next);
-    // const course = await Course.create(data);
-    // res.status(201).json({
-    //   success: true,
-    //   course,
-    // });
   } catch (error) {
-    console.log(error);
+    return next(new AppError(`${error}`, 400));
   }
 };
 
@@ -54,7 +49,7 @@ const editCourse = async (req, res, next) => {
       return res.status(404).send('Course with the given id does not exist');
     await updateCourse(courseId, data, res);
   } catch (error) {
-    console.log(error);
+    return next(new AppError(`${error}`, 400));
   }
 };
 
@@ -62,7 +57,7 @@ const getAllCourses = catchAsync(async (req, res, next) => {
   try {
     await getCourses(res);
   } catch (error) {
-    return next(new AppError('reyan we are doing it', 400));
+    return next(new AppError(`${error}`, 400));
     //console.log(error);
   }
 });
@@ -81,7 +76,7 @@ const deleteCourse = async (req, res, next) => {
     const courseId = req.params.id;
     await removeCourse(courseId, res);
   } catch (error) {
-    console.log(error);
+    return next(new AppError(`${error}`, 400));
   }
 };
 
