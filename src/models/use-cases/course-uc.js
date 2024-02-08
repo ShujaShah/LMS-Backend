@@ -9,6 +9,7 @@ const createCourse = async (data, res) => {
   });
 };
 
+//Update Course
 const updateCourse = async (courseId, data, res) => {
   const editCourse = await Course.findByIdAndUpdate(
     courseId,
@@ -21,4 +22,15 @@ const updateCourse = async (courseId, data, res) => {
   });
 };
 
-module.exports = { createCourse, updateCourse };
+//Get All Courses
+const getCourses = async (res) => {
+  const courses = await Course.find();
+  console.log(courses);
+  if (!courses) return res.status(400).send('no courses in DB');
+  res.status(201).json({
+    success: true,
+    data: courses,
+  });
+};
+
+module.exports = { createCourse, updateCourse, getCourses };

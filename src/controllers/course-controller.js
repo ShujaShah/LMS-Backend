@@ -1,5 +1,9 @@
 const cloudinary = require('cloudinary');
-const { createCourse, updateCourse } = require('../models/use-cases/course-uc');
+const {
+  createCourse,
+  updateCourse,
+  getCourses,
+} = require('../models/use-cases/course-uc');
 
 //Create Course
 const uploadCourse = async (req, res, next) => {
@@ -50,4 +54,12 @@ const editCourse = async (req, res, next) => {
   }
 };
 
-module.exports = { uploadCourse, editCourse };
+const getAllCourses = async (req, res, next) => {
+  try {
+    await getCourses(res);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { uploadCourse, editCourse, getAllCourses };
