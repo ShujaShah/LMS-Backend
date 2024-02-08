@@ -26,8 +26,10 @@ const updateCourse = async (courseId, data, res) => {
 const getCourses = async (res) => {
   const courses = await Course.find();
   if (!courses) return res.status(400).send('no courses in DB');
+  const count = await Course.countDocuments();
   res.status(201).json({
     success: true,
+    count: count,
     data: courses,
   });
 };
