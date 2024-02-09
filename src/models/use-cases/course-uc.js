@@ -1,6 +1,7 @@
 const { Redis } = require('ioredis');
 const Course = require('../entities/course-entity');
 const redisClient = require('../../utils/redis');
+const AppError = require('../../utils/AppError');
 
 //Create Course
 const createCourse = async (data, res) => {
@@ -26,29 +27,25 @@ const updateCourse = async (courseId, data, res) => {
 
 //Get All Courses
 const getCourses = async (res) => {
-  try {
-    const isCached = redisClient.get('allCourses');
-    if (isCached) {
-      const courses = JSON.parse(isCached);
-      res.status(200).json({
-        success: true,
-        courses,
-      });
-    } else {
-      const courses = await Course.find().select(
-        '-courseData.videoUrl -courseData.questions -courseData.links'
-      );
-      await redisClient.set('allCourses', JSON.stringify(courses));
-      if (!courses) return res.status(400).send('no courses in DB');
-      const count = await Course.countDocuments();
-      res.status(201).json({
-        success: true,
-        count: count,
-        data: courses,
-      });
-    }
-  } catch (error) {
-    console.log(error);
+  const isCached = await redisClient.get('allCourses');
+  if (isCached) {
+    const courses = JSON.parse(isCached);
+    res.status(200).json({
+      success: true,
+      courses,
+    });
+  } else {
+    const courses = await Course.find().select(
+      '-courseData.videoUrl -courseData.questions -courseData.links'
+    );
+    await redisClient.set('allCourses', JSON.stringify(courses));
+    if (!courses) return res.status(400).send('no courses in DB');
+    const count = await Course.countDocuments();
+    res.status(201).json({
+      success: true,
+      count: count,
+      data: courses,
+    });
   }
 };
 
