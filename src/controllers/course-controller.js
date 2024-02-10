@@ -5,6 +5,7 @@ const {
   getCourses,
   getOneCourse,
   removeCourse,
+  CourseByUser,
 } = require('../models/use-cases/course-uc');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
@@ -80,10 +81,30 @@ const deleteCourse = async (req, res, next) => {
   }
 };
 
+const getUserPurchasedCourse = async (req, res, next) => {
+  try {
+    const userCourseList = req.user?.courses;
+    const courseId = req.params.id;
+
+    const courseExists = userCourseList?.find(
+      (course) => course._id.toString() === courseId
+    );
+
+    if (!courseExists) {
+      //return next(new AppError('Access forbidden', 403));
+      return res.status(403).send('Access forbidden');
+    }
+    await CourseByUser(courseId, res);
+  } catch (error) {
+    return console.log(error);
+  }
+};
+
 module.exports = {
   uploadCourse,
   editCourse,
   getAllCourses,
   getSingleCourse,
   deleteCourse,
+  getUserPurchasedCourse,
 };

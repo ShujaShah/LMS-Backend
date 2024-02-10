@@ -5,6 +5,7 @@ const {
   getAllCourses,
   getSingleCourse,
   deleteCourse,
+  getUserPurchasedCourse,
 } = require('../controllers/course-controller');
 const isAuthenticated = require('../middlewares/auth');
 const isAdmin = require('../middlewares/admin');
@@ -15,5 +16,10 @@ courseRouter.patch('/edit-course/:id', isAuthenticated, isAdmin, editCourse);
 courseRouter.get('/', getAllCourses);
 courseRouter.get('/:id', getSingleCourse);
 courseRouter.delete('/:id', isAuthenticated, isAdmin, deleteCourse);
+courseRouter.get(
+  '/get-course-content/:id',
+  isAuthenticated,
+  getUserPurchasedCourse
+);
 
 module.exports = courseRouter;
