@@ -72,7 +72,11 @@ const getOneCourse = async (courseId, res) => {
   }
 };
 
-const removeCourse = async (courseId, res) => {
+const removeCourse = async (courseId, res, next) => {
+  const isCached = await redisClient.get(courseId);
+  if (isCached) {
+    await redisClient.del(isCached);
+  }
   const course = await Course.findByIdAndDelete(courseId);
   if (!course)
     return res.status(400).send('course with the given id not found');

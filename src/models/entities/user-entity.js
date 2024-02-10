@@ -35,9 +35,11 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    courses: {
-      courseId: String,
-    },
+    courses: [
+      {
+        courseId: String,
+      },
+    ],
   },
   { timestamps: true }
 );
