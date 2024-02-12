@@ -88,8 +88,6 @@ const removeCourse = async (courseId, res, next) => {
 
 const CourseByUser = async (courseId, res) => {
   const course = await Course.findById(courseId);
-  console.log(courseId);
-  console.log('here is the course', course);
   res.status(200).json({
     success: true,
     course,
