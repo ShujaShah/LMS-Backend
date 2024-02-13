@@ -5,7 +5,7 @@ const {
   getCourses,
   getOneCourse,
   removeCourse,
-  CourseByUser,
+  courseByUser,
   courseQuestions,
 } = require('../models/use-cases/course-uc');
 const catchAsync = require('../utils/catchAsync');
@@ -95,7 +95,7 @@ const getUserPurchasedCourse = async (req, res, next) => {
       //return next(new AppError('Access forbidden', 403));
       return res.status(403).send('Access forbidden');
     }
-    await CourseByUser(courseId, res);
+    await courseByUser(courseId, res);
   } catch (error) {
     return console.log(error);
   }

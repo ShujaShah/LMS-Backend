@@ -86,7 +86,7 @@ const removeCourse = async (courseId, res, next) => {
   });
 };
 
-const CourseByUser = async (courseId, res) => {
+const courseByUser = async (courseId, res) => {
   const course = await Course.findById(courseId);
   res.status(200).json({
     success: true,
@@ -123,6 +123,6 @@ module.exports = {
   getCourses,
   getOneCourse,
   removeCourse,
-  CourseByUser,
+  courseByUser,
   courseQuestions,
 };
