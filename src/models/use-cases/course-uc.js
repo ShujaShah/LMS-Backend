@@ -94,7 +94,7 @@ const CourseByUser = async (courseId, res) => {
   });
 };
 
-const CourseQuestions = async (data, req, res) => {
+const courseQuestions = async (data, req, res) => {
   const question = data?.question;
   const course = await Course.findById(data.courseId);
   const courseContent = course?.courseData?.find((item) =>
@@ -124,5 +124,5 @@ module.exports = {
   getOneCourse,
   removeCourse,
   CourseByUser,
-  CourseQuestions,
+  courseQuestions,
 };
