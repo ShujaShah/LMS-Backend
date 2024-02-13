@@ -2,6 +2,7 @@ const { Redis } = require('ioredis');
 const Course = require('../entities/course-entity');
 const redisClient = require('../../utils/redis');
 const AppError = require('../../utils/AppError');
+const sendMail = require('../../utils/send-mail');
 
 //Create Course
 const createCourse = async (data, res) => {
@@ -108,7 +109,6 @@ const courseQuestions = async (data, req, res) => {
     question,
     questionReplies: [],
   };
-  console.log('here is the question', question);
   courseContent.questions.push(newQuestion);
   await course.save();
   res.status(201).json({
@@ -117,6 +117,59 @@ const courseQuestions = async (data, req, res) => {
   });
 };
 
+const answerQuestion = async (data, req, res) => {
+  const answer = data.answer;
+  console.log('her is the answer', answer);
+  const course = await Course.findById(data.courseId);
+
+  const courseContent = course?.courseData?.find((item) =>
+    item._id.equals(data.contentId)
+  );
+  if (!courseContent) {
+    return res.status(400).send('invalid content id');
+  }
+
+  const question = courseContent?.questions?.find((item) =>
+    item._id.equals(data.questionId)
+  );
+  if (!question) return res.status(400).send('Question doesnot exist');
+
+  const newAnswer = {
+    user: req.user,
+    answer,
+  };
+
+  question.questionReplies.push(newAnswer);
+  await course.save();
+
+  //   if (req.user._id === question.user._id) {
+  //     //send notification
+  //   } else {
+  //     const data = {
+  //       name: question.user.name,
+  //       title: courseContent.title,
+  //     };
+  //     const html = await ejs.renderFile(
+  //       path.join(__dirname, '../mails/question-reply.ejs'),
+  //       data
+  //     );
+  //     try {
+  //       await sendMail({
+  //         email: question.user.email,
+  //         subject: 'Question Reply',
+  //         template: 'question-reply.ejs',
+  //         data,
+  //       });
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+
+  res.status(201).json({
+    success: true,
+    course,
+  });
+};
 module.exports = {
   createCourse,
   updateCourse,
@@ -125,4 +178,5 @@ module.exports = {
   removeCourse,
   courseByUser,
   courseQuestions,
+  answerQuestion,
 };

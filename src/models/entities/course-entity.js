@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { User } = require('./user-entity');
 
 //======================================================Review Schema========================================================
 const reviewSchema = new mongoose.Schema({
@@ -18,7 +19,10 @@ const linkSchema = new mongoose.Schema({
 
 //======================================================Comments Schema========================================================
 const commentsSchema = new mongoose.Schema({
-  user: Object,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   question: String,
   questionReplies: [Object],
 });
