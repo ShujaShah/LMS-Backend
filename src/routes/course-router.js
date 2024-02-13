@@ -6,6 +6,7 @@ const {
   getSingleCourse,
   deleteCourse,
   getUserPurchasedCourse,
+  addQuestionData,
 } = require('../controllers/course-controller');
 const isAuthenticated = require('../middlewares/auth');
 const isAdmin = require('../middlewares/admin');
@@ -21,5 +22,6 @@ courseRouter.get(
   isAuthenticated,
   getUserPurchasedCourse
 );
+courseRouter.put('/add-question', isAuthenticated, addQuestionData);
 
 module.exports = courseRouter;

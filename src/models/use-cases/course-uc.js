@@ -94,6 +94,29 @@ const CourseByUser = async (courseId, res) => {
   });
 };
 
+const CourseQuestions = async (data, req, res) => {
+  const question = data?.question;
+  const course = await Course.findById(data.courseId);
+  const courseContent = course?.courseData?.find((item) =>
+    item._id.equals(data.contentId)
+  );
+  if (!courseContent) {
+    return res.status(400).send('invalid content id');
+  }
+  const newQuestion = {
+    user: req.user,
+    question,
+    questionReplies: [],
+  };
+  console.log('here is the question', question);
+  courseContent.questions.push(newQuestion);
+  await course.save();
+  res.status(201).json({
+    success: true,
+    course,
+  });
+};
+
 module.exports = {
   createCourse,
   updateCourse,
@@ -101,4 +124,5 @@ module.exports = {
   getOneCourse,
   removeCourse,
   CourseByUser,
+  CourseQuestions,
 };

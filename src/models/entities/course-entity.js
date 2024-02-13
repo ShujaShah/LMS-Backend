@@ -19,8 +19,8 @@ const linkSchema = new mongoose.Schema({
 //======================================================Comments Schema========================================================
 const commentsSchema = new mongoose.Schema({
   user: Object,
-  comment: String,
-  commentReplies: [Object],
+  question: String,
+  questionReplies: [Object],
 });
 
 //======================================================Course Data Schema========================================================

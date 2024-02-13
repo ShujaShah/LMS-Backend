@@ -6,6 +6,7 @@ const {
   getOneCourse,
   removeCourse,
   CourseByUser,
+  CourseQuestions,
 } = require('../models/use-cases/course-uc');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
@@ -100,6 +101,21 @@ const getUserPurchasedCourse = async (req, res, next) => {
   }
 };
 
+const addQuestionData = async (req, res, next) => {
+  try {
+    //const { question, courseId, contentId } = req.body;
+    const data = {
+      question: req.body.question,
+      courseId: req.body.courseId,
+      contentId: req.body.contentId,
+    };
+    await CourseQuestions(data, req, res);
+  } catch (error) {
+    //return next(console.log(error));
+    console.log(error);
+  }
+};
+
 module.exports = {
   uploadCourse,
   editCourse,
@@ -107,4 +123,5 @@ module.exports = {
   getSingleCourse,
   deleteCourse,
   getUserPurchasedCourse,
+  addQuestionData,
 };
