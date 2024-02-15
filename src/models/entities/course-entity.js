@@ -3,7 +3,11 @@ const { User } = require('./user-entity');
 
 //======================================================Review Schema========================================================
 const reviewSchema = new mongoose.Schema({
-  user: Object,
+  // user: Object,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   rating: {
     type: Number,
     default: 0,

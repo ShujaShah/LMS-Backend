@@ -8,6 +8,7 @@ const {
   courseByUser,
   courseQuestions,
   answerQuestion,
+  addReviewsRatings,
 } = require('../models/use-cases/course-uc');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
@@ -130,6 +131,30 @@ const addAnswerToQuestion = async (req, res, next) => {
   }
 };
 
+const addReview = async (req, res, next) => {
+  try {
+    const checkUserCourses = req.user?.courses;
+    const courseId = req.params.id;
+
+    const data = {
+      review: req.body.review,
+      rating: req.body.rating,
+    };
+
+    const courseExists = checkUserCourses?.some(
+      (course) => course._id.toString() === courseId.toString()
+    );
+    if (!courseExists)
+      return res
+        .status(400)
+        .send('Reviews can be made to purchased courses only');
+
+    await addReviewsRatings(courseId, data, req, res);
+  } catch (error) {
+    return next(console.log(error));
+  }
+};
+
 module.exports = {
   uploadCourse,
   editCourse,
@@ -139,4 +164,5 @@ module.exports = {
   getUserPurchasedCourse,
   addQuestionData,
   addAnswerToQuestion,
+  addReview,
 };

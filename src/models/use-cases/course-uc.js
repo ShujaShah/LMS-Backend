@@ -172,6 +172,39 @@ const answerQuestion = async (data, req, res) => {
     course,
   });
 };
+
+const addReviewsRatings = async (courseId, data, req, res) => {
+  const course = await Course.findById(courseId);
+  if (!course) return res.status(400).send('Course id not found');
+
+  const reviewData = {
+    user: req.user,
+    comments: data.review,
+    rating: data.rating,
+  };
+
+  course.reviews.push(reviewData);
+
+  //calculate the average for the ratings...
+  let average = 0;
+  course?.reviews.forEach((review) => {
+    average = average + review.rating;
+  });
+  if (course) {
+    course.ratings = average / course.reviews.length;
+  }
+  await course?.save();
+
+  const notification = {
+    title: 'New Review Received',
+    message: `${req.user.name} has reviewed your course ${course?.title}`,
+  };
+  // Todo: Create a notification here
+  res.status(201).json({
+    success: true,
+    course,
+  });
+};
 module.exports = {
   createCourse,
   updateCourse,
@@ -181,4 +214,5 @@ module.exports = {
   courseByUser,
   courseQuestions,
   answerQuestion,
+  addReviewsRatings,
 };
