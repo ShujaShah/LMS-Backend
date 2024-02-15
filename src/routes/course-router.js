@@ -28,6 +28,11 @@ courseRouter.get(
 courseRouter.put('/add-question', isAuthenticated, addQuestionData);
 courseRouter.put('/add-answer', isAuthenticated, addAnswerToQuestion);
 courseRouter.put('/add-review/:id', isAuthenticated, addReview);
-courseRouter.put('/add-review-reply', isAuthenticated, addReplyToReview);
+courseRouter.put(
+  '/add-review-reply',
+  isAuthenticated,
+  isAdmin,
+  addReplyToReview
+);
 
 module.exports = courseRouter;
