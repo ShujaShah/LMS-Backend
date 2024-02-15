@@ -3,6 +3,8 @@ const Course = require('../entities/course-entity');
 const redisClient = require('../../utils/redis');
 const AppError = require('../../utils/AppError');
 const sendMail = require('../../utils/send-mail');
+const ejs = require('ejs');
+const path = require('path');
 
 //Create Course
 const createCourse = async (data, res) => {
@@ -109,6 +111,7 @@ const courseQuestions = async (data, req, res) => {
     question,
     questionReplies: [],
   };
+
   courseContent.questions.push(newQuestion);
   await course.save();
   res.status(201).json({
@@ -119,7 +122,6 @@ const courseQuestions = async (data, req, res) => {
 
 const answerQuestion = async (data, req, res) => {
   const answer = data.answer;
-  console.log('her is the answer', answer);
   const course = await Course.findById(data.courseId);
 
   const courseContent = course?.courseData?.find((item) =>
@@ -150,7 +152,7 @@ const answerQuestion = async (data, req, res) => {
   //       title: courseContent.title,
   //     };
   //     const html = await ejs.renderFile(
-  //       path.join(__dirname, '../mails/question-reply.ejs'),
+  //       path.join(__dirname, '../../mails/question-reply.ejs'),
   //       data
   //     );
   //     try {
