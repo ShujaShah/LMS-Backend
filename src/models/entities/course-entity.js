@@ -13,6 +13,7 @@ const reviewSchema = new mongoose.Schema({
     default: 0,
   },
   comments: String,
+  commentReplies: [Object],
 });
 
 //======================================================Links Schema========================================================

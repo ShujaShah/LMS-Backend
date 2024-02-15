@@ -9,6 +9,7 @@ const {
   courseQuestions,
   answerQuestion,
   addReviewsRatings,
+  addReplyToReviewUseCase,
 } = require('../models/use-cases/course-uc');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
@@ -155,6 +156,19 @@ const addReview = async (req, res, next) => {
   }
 };
 
+const addReplyToReview = async (req, res, next) => {
+  try {
+    const data = {
+      comment: req.body.comment,
+      courseId: req.body.courseId,
+      reviewId: req.body.reviewId,
+    };
+    await addReplyToReviewUseCase(data, req, res);
+  } catch (error) {
+    return next(console.log(error));
+  }
+};
+
 module.exports = {
   uploadCourse,
   editCourse,
@@ -165,4 +179,5 @@ module.exports = {
   addQuestionData,
   addAnswerToQuestion,
   addReview,
+  addReplyToReview,
 };

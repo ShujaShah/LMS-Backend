@@ -205,6 +205,33 @@ const addReviewsRatings = async (courseId, data, req, res) => {
     course,
   });
 };
+
+const addReplyToReviewUseCase = async (data, req, res) => {
+  const course = await Course.findById(data.courseId);
+  const replyReview = data.comment;
+  if (!course)
+    return res.status(400).send('Course with the given id not found');
+  const review = course?.reviews?.find(
+    (review) => review._id.toString() === data.reviewId
+  );
+  if (!review) return res.status(400).send('Review not found');
+  const replyData = {
+    user: req.user,
+    replyReview,
+  };
+
+  if (!review.commentReplies) {
+    review.commentReplies = [];
+  }
+
+  review.commentReplies.push(replyData);
+  await course.save();
+  res.status(201).json({
+    success: true,
+    course,
+  });
+};
+
 module.exports = {
   createCourse,
   updateCourse,
@@ -215,4 +242,5 @@ module.exports = {
   courseQuestions,
   answerQuestion,
   addReviewsRatings,
+  addReplyToReviewUseCase,
 };
