@@ -24,7 +24,7 @@ const CreateOrderUseCase = async (data, req, res, next) => {
     paymentInfo: data.paymentInfo,
   };
 
-  await Order.create(createOrder);
+  const order = await Order.create(createOrder);
 
   //Send Mail to the user
   const mailData = {
@@ -70,7 +70,7 @@ const CreateOrderUseCase = async (data, req, res, next) => {
 
   res.status(201).json({
     success: true,
-    order: course,
+    order,
   });
 };
 

@@ -8,7 +8,7 @@ function isAdmin(req, res, next) {
     req.user = decoded;
     if (req.user.role !== 'admin')
       res.status(403).send('You are not authorized to perform this action...');
-    next();
+    return;
   } catch (ex) {
     res.status(400).send('Invalid Token');
   }
