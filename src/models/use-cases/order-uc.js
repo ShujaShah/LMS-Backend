@@ -63,7 +63,11 @@ const CreateOrderUseCase = async (data, req, res, next) => {
     title: 'New order',
     message: `Course ${course?.title} has been purchased by ${user.name}`,
   });
+
   course.purchased += 1;
+
+  await course.save();
+
   res.status(201).json({
     success: true,
     order: course,
