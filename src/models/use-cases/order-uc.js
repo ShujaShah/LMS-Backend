@@ -1,8 +1,10 @@
-const User = require('../entities/user-entity');
 const Course = require('../entities/course-entity');
 const Order = require('../entities/order-entity');
-const sendMail = require('../../utils/send-mail');
+const { User } = require('../entities/user-entity');
 const Notification = require('../entities/notifications-entity');
+const sendMail = require('../../utils/send-mail');
+const ejs = require('ejs');
+const path = require('path');
 
 const CreateOrderUseCase = async (data, req, res, next) => {
   const user = await User.findById(req.user._id);
@@ -16,16 +18,18 @@ const CreateOrderUseCase = async (data, req, res, next) => {
 
   const course = await Course.findById(data.courseId);
   if (!course) return res.status(400).send('Course not found');
-  const data = {
-    courseId: data.course._id,
+  const createOrder = {
+    courseId: data.courseId,
     userId: user._id,
+    paymentInfo: data.paymentInfo,
   };
-  const newOrder = await Order.create(data);
+
+  await Order.create(createOrder);
 
   //Send Mail to the user
   const mailData = {
     order: {
-      _id: course._id.slice(0, 6),
+      _id: course._id.toString().slice(0, 6),
       name: course.name,
       price: course.price,
       data: new Date().toLocaleDateString('en-US', {
@@ -36,7 +40,7 @@ const CreateOrderUseCase = async (data, req, res, next) => {
     },
   };
   const html = await ejs.renderFile(
-    path(__dirname, '../../mails/order-confirmation.ejs'),
+    path.join(__dirname, '../../mails/order-confirmation.ejs'),
     { order: mailData }
   );
   try {
@@ -54,10 +58,10 @@ const CreateOrderUseCase = async (data, req, res, next) => {
   user?.courses.push(course?._id);
   await user?.save();
 
-  const notification = Notification.create({
+  const notification = await Notification.create({
     user: user._id,
     title: 'New order',
-    message: `Course ${course?.name} has been purchased by ${user.name}`,
+    message: `Course ${course?.title} has been purchased by ${user.name}`,
   });
   res.status(201).json({
     success: true,
