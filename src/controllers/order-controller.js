@@ -8,7 +8,7 @@ const CreateOrder = async (req, res, next) => {
       courseId: req.body.courseId,
       payment_info: req.body.payment_info,
     };
-    await CreateOrderUseCase(data);
+    await CreateOrderUseCase(data, req);
   } catch (error) {
     next(console.log(error));
   }
