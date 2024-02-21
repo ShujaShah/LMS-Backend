@@ -5,6 +5,7 @@ const AppError = require('../../utils/AppError');
 const sendMail = require('../../utils/send-mail');
 const ejs = require('ejs');
 const path = require('path');
+const Notification = require('../entities/notifications-entity');
 
 //Create Course
 const createCourse = async (data, res) => {
@@ -113,6 +114,13 @@ const courseQuestions = async (data, req, res) => {
   };
 
   courseContent.questions.push(newQuestion);
+
+  await Notification.create({
+    user: req.user?._id,
+    title: 'New Question Posted',
+    message: `New Question has been posted in ${courseContent?.title}`,
+  });
+
   await course.save();
   res.status(201).json({
     success: true,
@@ -142,6 +150,12 @@ const answerQuestion = async (data, req, res) => {
   };
 
   question.questionReplies.push(newAnswer);
+
+  await Notification.create({
+    user: req.user?._id,
+    title: 'Reply received',
+    message: `Reply to the Question ${courseContent?.title} received`,
+  });
   await course.save();
 
   //   if (req.user._id === question.user._id) {
