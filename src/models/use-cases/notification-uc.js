@@ -25,4 +25,16 @@ const UpdateNotificationStatus = async (req, res, next) => {
   });
 };
 
-module.exports = { GetAllNotifications, UpdateNotificationStatus };
+const DeleteNotification = async (thirtyDaysAgo, req, res, next) => {
+  const notification = await Notification.deleteMany({
+    status: 'read',
+    createAt: { $lt: thirtyDaysAgo },
+  });
+  console.log('Deleted the read notification');
+};
+
+module.exports = {
+  GetAllNotifications,
+  UpdateNotificationStatus,
+  DeleteNotification,
+};
