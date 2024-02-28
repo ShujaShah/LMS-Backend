@@ -1,5 +1,6 @@
 const generateLastTwelveMonthsData = require('../utils/AnalyticsGenerator');
-const { User } = require('../models/entities/user');
+const { User } = require('../models/entities/user-entity');
+const catchAsync = require('../utils/catchAsync');
 
 const getUserAnalytics = catchAsync(async (req, res, next) => {
   try {

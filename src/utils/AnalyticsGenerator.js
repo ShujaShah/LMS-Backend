@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-export async function generateLastTwelveMonthsData() {
+async function generateLastTwelveMonthsData() {
   const lastTwelveMonths = [month, count];
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + 1);
@@ -32,3 +32,5 @@ export async function generateLastTwelveMonthsData() {
   }
   return { lastTwelveMonths };
 }
+
+module.exports = generateLastTwelveMonthsData;
