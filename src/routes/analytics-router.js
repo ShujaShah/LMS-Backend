@@ -4,11 +4,6 @@ const getUserAnalytics = require('../controllers/analytics-controller');
 const isAuthenticated = require('../middlewares/auth');
 const isAdmin = require('../middlewares/admin');
 
-analyticsRouter.get(
-  '/user-analytics',
-  isAuthenticated,
-  isAdmin,
-  getUserAnalytics
-);
+analyticsRouter.get('/user-analytics', getUserAnalytics);
 
 module.exports = analyticsRouter;

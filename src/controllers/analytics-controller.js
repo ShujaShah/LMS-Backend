@@ -1,8 +1,8 @@
 const generateLastTwelveMonthsData = require('../utils/AnalyticsGenerator');
 const { User } = require('../models/entities/user-entity');
-const catchAsync = require('../utils/catchAsync');
 
-const getUserAnalytics = catchAsync(async (req, res, next) => {
+const getUserAnalytics = async (req, res, next) => {
+  console.log('here in the controller');
   try {
     const users = await generateLastTwelveMonthsData(User);
     res.status(201).json({
@@ -10,8 +10,8 @@ const getUserAnalytics = catchAsync(async (req, res, next) => {
       users,
     });
   } catch (error) {
-    return next(console.log(error));
+    console.log(error);
   }
-});
+};
 
 module.exports = getUserAnalytics;
