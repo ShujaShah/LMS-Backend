@@ -1,9 +1,15 @@
 const express = require('express');
-const analyticsRouter = express.Router();
-const getUserAnalytics = require('../controllers/analytics-controller');
 const isAuthenticated = require('../middlewares/auth');
 const isAdmin = require('../middlewares/admin');
+const {
+  getUserAnalytics,
+  getCourseAnalytics,
+  getOrderAnalytics,
+} = require('../controllers/analytics-controller');
+const analyticsRouter = express.Router();
 
-analyticsRouter.get('/user-analytics', getUserAnalytics);
+analyticsRouter.get('/user-analytics', isAuthenticated, getUserAnalytics);
+analyticsRouter.get('/course-analytics', isAuthenticated, getCourseAnalytics);
+analyticsRouter.get('/order-analytics', isAuthenticated, getOrderAnalytics);
 
 module.exports = analyticsRouter;

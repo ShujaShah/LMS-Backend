@@ -43,61 +43,64 @@ const courseDataSchema = new mongoose.Schema({
 });
 
 //======================================================Course Schema========================================================
-const courseSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  discountedPrice: {
-    type: Number,
-  },
-  thumbnail: {
-    public_id: {
+const courseSchema = new mongoose.Schema(
+  {
+    title: {
       type: String,
-      //required: true,
+      required: true,
     },
-    url: {
+    description: {
       type: String,
-      //required: true,
+      required: true,
     },
-  },
-  tags: {
-    type: String,
-    required: true,
-  },
-  demoUrl: {
-    type: String,
-    required: true,
-  },
-  reviews: [reviewSchema],
-  courseData: [courseDataSchema],
-  ratings: {
-    type: Number,
-    defatult: 0,
-  },
-  purchased: {
-    type: Number,
-    default: 0,
-  },
-  courseDetails: [
-    {
-      title: String,
+    price: {
+      type: Number,
+      required: true,
     },
-  ],
-  preRequisits: [
-    {
-      title: String,
+    discountedPrice: {
+      type: Number,
     },
-  ],
-});
+    thumbnail: {
+      public_id: {
+        type: String,
+        //required: true,
+      },
+      url: {
+        type: String,
+        //required: true,
+      },
+    },
+    tags: {
+      type: String,
+      required: true,
+    },
+    demoUrl: {
+      type: String,
+      required: true,
+    },
+    reviews: [reviewSchema],
+    courseData: [courseDataSchema],
+    ratings: {
+      type: Number,
+      defatult: 0,
+    },
+    purchased: {
+      type: Number,
+      default: 0,
+    },
+    courseDetails: [
+      {
+        title: String,
+      },
+    ],
+    preRequisits: [
+      {
+        title: String,
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 const Course = mongoose.model('Course', courseSchema);
 
